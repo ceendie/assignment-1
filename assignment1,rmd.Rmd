@@ -1,0 +1,53 @@
+---
+title: "ANA 515 Assignment 1"
+author: "CINDY BOSUBEN"
+date: '2022-06-06'
+output: html_document
+theme:
+  bootswatch:*sandstone*
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages(c("tidyverse","knitr","bslib"))
+#load the installed packages
+library(tidyverse)
+library(knitr)
+library(bslib)
+```
+```{r get-data, include = FALSE}
+url <- "https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv"
+
+
+gun_data <- read_csv(url)
+glimpse(gun_data)
+```
+
+```{r data-manipulation, include = FALSE}
+#this next line is creating a subset called 'youth' of the gun_data dataset where the age is equal or greater to 65
+youth <- gun_data %>% 
+  filter(age <= 65)
+summary(youth)
+```
+
+```{r inline-text, echo = FALSE}
+#This next chunk is inline code. Inline code puts the text with the output of the function in the document.
+```
+We have data about `r nrow(gun_data)` individuals killed by guns. Only `r nrow(gun_data) - nrow(youth)`  are older than 65. The distribution of the remainder is shown below: 
+
+# Gun deaths by age 
+```{r youth-dist, echo = FALSE} 
+library(ggplot2)
+youth %>% 
+ggplot(aes(age)) + 
+geom_freqpoly(binwidth = 1)
+```
+
+# Gun deaths by race 
+```{r race-dist, echo = FALSE} 
+youth %>% 
+ggplot(aes(fct_infreq(race) %>% fct_rev())) + 
+geom_bar() + coord_flip() + 
+labs(x = "Victim race") 
+```
+
